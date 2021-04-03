@@ -230,6 +230,11 @@ value returned by function `user-mail-address'."
   :type 'boolean
   :group 'rpm-spec)
 
+(defcustom rpm-spec-suse-style nil
+  "*Choose SUSE style rpm spec or not."
+  :type 'boolean
+  :group 'rpm-spec)
+
 (defgroup rpm-spec-faces nil
   "Font lock faces for `rpm-spec-mode'."
   :prefix "rpm-spec-"
@@ -1377,6 +1382,15 @@ if one is present in the file."
 ;;------------------------------------------------------------
 
 (defun rpm-spec-initialize ()
+  "Choose a spec style to insert."
+  (if rpm-spec-suse-style
+      (rpm-spec-initialize-suse)
+    (rpm-spec-initialize-default))
+  )
+
+;;------------------------------------------------------------
+
+(defun rpm-spec-initialize-default ()
   "Create a default spec file if one does not exist or is empty."
   (let (file name version (release rpm-spec-default-release))
     (setq file (if (buffer-file-name)
@@ -1439,6 +1453,26 @@ if one is present in the file."
 
     (end-of-line 1)
     (rpm-add-change-log-entry "Initial build.")))
+
+;;------------------------------------------------------------
+
+(defun rpm-spec-initialize-suse ()
+  "Create a default SUSE style spec file if one does not exist or is empty."
+  (let (file name version (release rpm-spec-default-release))
+    (setq file (if (buffer-file-name)
+                   (file-name-nondirectory (buffer-file-name))
+                 (buffer-name)))
+    (cond((eq (string-match "\\(.*\\).spec" file) 0)
+     (setq name (match-string 1 file))))
+
+    ;; load spec.skeleton
+    (insert-file-contents "skeleton.spec")
+    (while (re-search-forward "specRPM_CREATION_NAME" nil t)
+      (replace-match name))
+    (re-search-backward "specCURRENT_YEAR" nil t)
+    (replace-match (number-to-string
+                    (decoded-time-year (decode-time (current-time)))))
+    ))
 
 ;;------------------------------------------------------------
 
