@@ -357,6 +357,12 @@ value returned by function `user-mail-address'."
 (defvar rpm-default-group "root"
   "*Default group for files, specified with \"%attr\".")
 
+(defconst rpm-spec-repo-directory
+  (file-name-directory
+   (file-truename (concat (file-name-sans-extension
+                           (or load-file-name (buffer-file-name))) ".el")))
+  "*The directory where this mode was cloned.")
+
 ;;------------------------------------------------------------
 
 (defvar rpm-no-gpg nil "Tell rpm not to sign package.")
@@ -1457,16 +1463,16 @@ if one is present in the file."
 ;;------------------------------------------------------------
 
 (defun rpm-spec-initialize-suse ()
-  "Create a default SUSE style spec file if one does not exist or is empty."
+  "Create a SUSE style spec file if one does not exist or is empty."
   (let (file name version (release rpm-spec-default-release))
     (setq file (if (buffer-file-name)
                    (file-name-nondirectory (buffer-file-name))
                  (buffer-name)))
     (cond((eq (string-match "\\(.*\\).spec" file) 0)
-     (setq name (match-string 1 file))))
+          (setq name (match-string 1 file))))
 
     ;; load spec.skeleton
-    (insert-file-contents "skeleton.spec")
+    (insert-file-contents (concat rpm-spec-repo-directory "skeleton.spec"))
     (while (re-search-forward "specRPM_CREATION_NAME" nil t)
       (replace-match name))
     (re-search-backward "specCURRENT_YEAR" nil t)
