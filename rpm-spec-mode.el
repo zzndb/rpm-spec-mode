@@ -429,7 +429,7 @@ value returned by function `user-mail-address'."
 
 (defvar rpm-tags-regexp
   (concat "\\(\\<" (regexp-opt (mapcar 'car rpm-tags-list))
-	  "\\|\\(Patch\\|Source\\)[0-9]+\\>\\)")
+          "\\|\\(Patch\\|Source\\)[0-9]+\\>\\)")
   "Regular expression for matching valid tags.")
 
 (defvar rpm-obsolete-tags-list
@@ -679,7 +679,7 @@ with no args, if that value is non-nil."
 
   (require 'easymenu)
   (easy-menu-define rpm-spec-call-menu rpm-spec-mode-map
-                    "Post menu for `rpm-spec-mode'." rpm-spec-mode-menu)
+    "Post menu for `rpm-spec-mode'." rpm-spec-mode-menu)
   (easy-menu-add rpm-spec-mode-menu)
 
   (if (and (= (buffer-size) 0) rpm-spec-initialize-sections)
@@ -687,8 +687,8 @@ with no args, if that value is non-nil."
 
   (if (not (executable-find "rpmbuild"))
       (progn
-	(setq rpm-spec-build-command "rpm")
-	(setq rpm-spec-nobuild-option "--test")))
+        (setq rpm-spec-build-command "rpm")
+        (setq rpm-spec-nobuild-option "--test")))
   
   (make-local-variable 'paragraph-start)
   (setq paragraph-start (concat "$\\|" page-delimiter))
@@ -696,8 +696,8 @@ with no args, if that value is non-nil."
   (setq paragraph-separate paragraph-start)
   (make-local-variable 'paragraph-ignore-fill-prefix)
   (setq paragraph-ignore-fill-prefix t)
-;  (make-local-variable 'indent-line-function)
-;  (setq indent-line-function 'c-indent-line)
+                                        ;  (make-local-variable 'indent-line-function)
+                                        ;  (setq indent-line-function 'c-indent-line)
   (make-local-variable 'require-final-newline)
   (setq require-final-newline t)
   (make-local-variable 'comment-start)
@@ -708,8 +708,8 @@ with no args, if that value is non-nil."
   (setq comment-column 32)
   (make-local-variable 'comment-start-skip)
   (setq comment-start-skip "#+ *")
-;  (make-local-variable 'comment-indent-function)
-;  (setq comment-indent-function 'c-comment-indent)
+                                        ;  (make-local-variable 'comment-indent-function)
+                                        ;  (setq comment-indent-function 'c-comment-indent)
   ;;Initialize font lock for GNU emacs.
   (make-local-variable 'font-lock-defaults)
   (setq font-lock-defaults '(rpm-spec-font-lock-keywords nil t))
@@ -738,33 +738,33 @@ If `rpm-change-log-uses-utc' is nil, \"today\" means the local time zone."
 
 (defun rpm-goto-add-change-log-header ()
   "Find change log and add header (if needed) for today"
-    (rpm-goto-section "changelog")
-    (let* ((address (rpm-spec-user-mail-address))
-           (fullname (or rpm-spec-user-full-name (user-full-name)))
-           (system-time-locale "C")
-           (string (concat "* " (rpm-change-log-date-string) " "
-                           fullname " <" address ">"
-                           (and rpm-spec-insert-changelog-version
-                                (concat " - " (rpm-find-spec-version t))))))
-      (if (not (search-forward string nil t))
-          (insert "\n" string "\n")
-        (forward-line 2))))
+  (rpm-goto-section "changelog")
+  (let* ((address (rpm-spec-user-mail-address))
+         (fullname (or rpm-spec-user-full-name (user-full-name)))
+         (system-time-locale "C")
+         (string (concat "* " (rpm-change-log-date-string) " "
+                         fullname " <" address ">"
+                         (and rpm-spec-insert-changelog-version
+                              (concat " - " (rpm-find-spec-version t))))))
+    (if (not (search-forward string nil t))
+        (insert "\n" string "\n")
+      (forward-line 2))))
 
 (defun rpm-add-change-log-entry (&optional change-log-entry)
   "Find change log and add an entry for today."
   (interactive "sChange log entry: ")
   (save-excursion
     (rpm-goto-add-change-log-header)
-      (while (looking-at "^-")
-             (forward-line))
-      (insert "- " change-log-entry "\n")))
+    (while (looking-at "^-")
+      (forward-line))
+    (insert "- " change-log-entry "\n")))
 
 (defun rpm-goto-add-change-log-entry ()
   "Goto change log and add an header for today (if needed)."
   (interactive)
   (rpm-goto-add-change-log-header)
   (while (looking-at "^-")
-         (forward-line))
+    (forward-line))
   (insert "- \n")
   (end-of-line '0))
 
@@ -985,7 +985,7 @@ Go to beginning of current section."
   (if (re-search-forward rpm-section-regexp nil t)
       (forward-line -1)
     (goto-char (point-max)))
-;;  (while (or (looking-at paragraph-separate) (looking-at "^\\s-*#"))
+  ;;  (while (or (looking-at paragraph-separate) (looking-at "^\\s-*#"))
   (while (looking-at "^\\s-*\\($\\|#\\)")
     (forward-line -1))
   (forward-line 1)
@@ -1074,34 +1074,34 @@ leave point at previous location."
 
   (if rpm-spec-auto-topdir
       (if (string-match ".*/SPECS/$" default-directory)
-	  (let ((topdir (expand-file-name default-directory)))
-	    (setq buildoptions
-		  (cons
-		   (concat "--define \"_topdir " 
-			   (replace-regexp-in-string "/SPECS/$" "" topdir)
-			   "\"")
-		   buildoptions)))))
+          (let ((topdir (expand-file-name default-directory)))
+            (setq buildoptions
+                  (cons
+                   (concat "--define \"_topdir "
+                           (replace-regexp-in-string "/SPECS/$" "" topdir)
+                           "\"")
+                   buildoptions)))))
 
   (progn
     (defun list->string (lst)
       (if (cdr lst)
-	  (concat (car lst) " " (list->string (cdr lst)))
-	(car lst)))
+          (concat (car lst) " " (list->string (cdr lst)))
+        (car lst)))
     (compilation-start (list->string (cons rpm-spec-build-command buildoptions)) 'rpmbuild-mode))
   
   (if (and rpm-spec-sign-gpg (not rpm-no-gpg))
       (let ((build-proc (get-buffer-process
-			 (get-buffer
-			  (compilation-buffer-name "rpmbuild" nil nil))))
-	    (rpm-passwd-cache (read-passwd "GPG passphrase: ")))
-	(process-send-string build-proc (concat rpm-passwd-cache "\n")))))
+                         (get-buffer
+                          (compilation-buffer-name "rpmbuild" nil nil))))
+            (rpm-passwd-cache (read-passwd "GPG passphrase: ")))
+        (process-send-string build-proc (concat rpm-passwd-cache "\n")))))
 
 (defun rpm-build-prepare (&optional arg)
   "Run a `rpmbuild -bp'."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bp' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg t)
     (rpm-build "-bp")))
 
@@ -1110,7 +1110,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bl' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg t)
     (rpm-build "-bl")))
 
@@ -1131,7 +1131,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bb' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg nil)
     (rpm-build "-bb")))
 
@@ -1140,7 +1140,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -bs' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg nil)
     (rpm-build "-bs")))
 
@@ -1149,7 +1149,7 @@ leave point at previous location."
   (interactive "p")
   (if rpm-spec-short-circuit
       (message "Cannot run `%s -ba' with --short-circuit"
-	       rpm-spec-build-command)
+               rpm-spec-build-command)
     (setq rpm-no-gpg nil)
     (rpm-build "-ba")))
 
@@ -1308,30 +1308,30 @@ command."
 See `search-forward-regexp'."
   (save-excursion
     (condition-case nil
-      (let ((str
-             (progn
-               (goto-char (point-min))
-               (search-forward-regexp
-                (concat "^" field ":[ \t]*\\(.*?\\)[ \t]*$") max)
-               (match-string 1))))
-        ;; Try to expand macros
-        (if (string-match "\\(%{?\\(\\?\\)?\\)\\([a-zA-Z0-9_]*\\)\\(}?\\)" str)
-            (let ((start-string (substring str 0 (match-beginning 1)))
-                  (end-string (substring str (match-end 4))))
-              (if (progn
-                    (goto-char (point-min))
-                    (search-forward-regexp
-                     (concat "%\\(define\\|global\\)[ \t]+"
-                             (match-string 3 str)
-                             "[ \t]+\\(.*\\)") nil t))
-                  ;; Got it - replace.
-                  (concat start-string (match-string 2) end-string)
-                (if (match-string 2 str)
-                    ;; Conditionally evaluated macro - remove it.
-                    (concat start-string end-string)
-                  ;; Leave as is.
-                  str)))
-          str))
+        (let ((str
+               (progn
+                 (goto-char (point-min))
+                 (search-forward-regexp
+                  (concat "^" field ":[ \t]*\\(.*?\\)[ \t]*$") max)
+                 (match-string 1))))
+          ;; Try to expand macros
+          (if (string-match "\\(%{?\\(\\?\\)?\\)\\([a-zA-Z0-9_]*\\)\\(}?\\)" str)
+              (let ((start-string (substring str 0 (match-beginning 1)))
+                    (end-string (substring str (match-end 4))))
+                (if (progn
+                      (goto-char (point-min))
+                      (search-forward-regexp
+                       (concat "%\\(define\\|global\\)[ \t]+"
+                               (match-string 3 str)
+                               "[ \t]+\\(.*\\)") nil t))
+                    ;; Got it - replace.
+                    (concat start-string (match-string 2) end-string)
+                  (if (match-string 2 str)
+                      ;; Conditionally evaluated macro - remove it.
+                      (concat start-string end-string)
+                    ;; Leave as is.
+                    str)))
+            str))
       (error nil))))
 
 (defun rpm-find-spec-version (&optional with-epoch)
@@ -1394,28 +1394,28 @@ if one is present in the file."
       (setq name (match-string 1 file))))
 
     (if rpm-spec-indent-heading-values
-	(insert
-	 "Summary:        "
-	 "\nName:           " (or name "")
-	 "\nVersion:        " (or version "")
-	 "\nRelease:        " (or release "")
-	 (if rpm-spec-default-epoch
-	     (concat "\nEpoch:          "
-		     (int-to-string rpm-spec-default-epoch))
-	   "")
-	 "\nLicense:        "
-	 "\nGroup:          "
-	 "\nURL:            "
-	 "\nSource0:        %{name}-%{version}.tar.gz"
-	 "\nBuildRoot:      " rpm-spec-default-buildroot)
+        (insert
+         "Summary:        "
+         "\nName:           " (or name "")
+         "\nVersion:        " (or version "")
+         "\nRelease:        " (or release "")
+         (if rpm-spec-default-epoch
+             (concat "\nEpoch:          "
+                     (int-to-string rpm-spec-default-epoch))
+           "")
+         "\nLicense:        "
+         "\nGroup:          "
+         "\nURL:            "
+         "\nSource0:        %{name}-%{version}.tar.gz"
+         "\nBuildRoot:      " rpm-spec-default-buildroot)
       (insert
        "Summary: "
        "\nName: " (or name "")
        "\nVersion: " (or version "")
        "\nRelease: " (or release "")
        (if rpm-spec-default-epoch
-	   (concat "\nEpoch: " (int-to-string rpm-spec-default-epoch))
-	 "")
+           (concat "\nEpoch: " (int-to-string rpm-spec-default-epoch))
+         "")
        "\nLicense: "
        "\nGroup: "
        "\nURL: "
