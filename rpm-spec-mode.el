@@ -112,7 +112,7 @@ Set the macros _target, _target_arch and _target_os accordingly"
   :group 'rpm-spec)
 
 (define-obsolete-variable-alias
-  'rpm-completion-ignore-case 'rpm-spec-completion-ignore-case)
+  'rpm-completion-ignore-case 'rpm-spec-completion-ignore-case "0.16")
 
 (defcustom rpm-spec-completion-ignore-case t
   "*Non-nil means that case differences are ignored during completion.
