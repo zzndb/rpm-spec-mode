@@ -132,7 +132,7 @@ This is used during Tempo template completion."
   :group 'rpm-spec)
 
 (define-obsolete-variable-alias
-  'rpm-spec-test 'rpm-spec-nobuild)
+  'rpm-spec-test 'rpm-spec-nobuild "0.16")
 
 (defcustom rpm-spec-nobuild nil
   "Do not execute any build stages.  Useful for testing out spec files."
@@ -158,7 +158,7 @@ the package."
   :group 'rpm-spec)
 
 (define-obsolete-variable-alias
-  'rpm-initialize-sections 'rpm-spec-initialize-sections)
+  'rpm-initialize-sections 'rpm-spec-initialize-sections "0.16")
 
 (defcustom rpm-spec-initialize-sections t
   "Automatically add empty section headings to new spec files."
@@ -166,7 +166,7 @@ the package."
   :group 'rpm-spec)
 
 (define-obsolete-variable-alias
-  'rpm-insert-version 'rpm-spec-insert-changelog-version)
+  'rpm-insert-version 'rpm-spec-insert-changelog-version "0.16")
 
 (defcustom rpm-spec-insert-changelog-version t
   "Automatically add version in a new change log entry."
